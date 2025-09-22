@@ -1,12 +1,16 @@
 
-L_inj = 50
-n_elems_inj = 50
+L_injext = 50
+n_elems_injext = 50
 
-A_inj = 0.1
-A_inj_frac1 = 0.1
+z_wells_bottom = ${fparse -L_injext}
 
-mdot_inlet = 1.0
-mdot_ramp_time = 10.0
+A_injext = 0.1
+# A_inj_frac1 = 0.1
+A_inj_frac1 = 1e-2
+A_ext_frac1 = 1e-2
+
+mdot_inlet_final = 1.0
+mdot_ramp_time = 100.0
 
 wells_blocks = 'inj_pipe'
 

@@ -1,6 +1,5 @@
 [GlobalParams]
-  # gravity_vector = '0 0 -9.8'
-  gravity_vector = '-9.8 0 0'
+  gravity_vector = '0 0 -9.8'
 
   fp = fp_water
   closures = simple_closures
@@ -11,6 +10,8 @@
   initial_p = initial_p_fn
   initial_T = ${T_inlet}
   initial_vel = 0
+
+  rdg_slope_reconstruction = FULL
 []
 
 [FluidProperties]
@@ -75,5 +76,9 @@
   [xml]
     type = XMLOutput
     execute_vector_postprocessors_on = 'INITIAL TIMESTEP_END'
+  []
+  [csv]
+    type = CSV
+    execute_vector_postprocessors_on = 'NONE'
   []
 []

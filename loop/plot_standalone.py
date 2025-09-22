@@ -11,8 +11,7 @@ from falcon_utilities import addTHMPythonPath
 addTHMPythonPath(app_dir)
 from thm_utilities import readMOOSEXML
 
-wells_data = readMOOSEXML('wells.xml')
-fracs_data = readMOOSEXML('fracs.xml')
+data = readMOOSEXML('wells.xml')
 
 def getXValues(data, vpp):
   # z_heated_pipe = data['heated_pipe_vpp']['z'][0]
@@ -51,12 +50,9 @@ def makePlot(var, vpp_base, y_label):
   ax.get_yaxis().get_major_formatter().set_useOffset(False)
   plt.xlabel("x Position [m]")
   plt.ylabel(y_label)
-  plotSet(wells_data, vpp_base + '_inj_1',  var, 'lightgreen', '-', "Injection 1")
-  plotSet(wells_data, vpp_base + '_inj_2',  var, 'darkgreen', '-', "Injection 2")
-  plotSet(fracs_data, vpp_base + '_frac1', var, 'indianred', '-', "Fracture 1")
-  plotSet(wells_data, vpp_base + '_ext_1',  var, 'cornflowerblue', '-', "Extraction 1")
-  plotSet(wells_data, vpp_base + '_ext_2',  var, 'royalblue', '-', "Extraction 2")
-  # plotSet(data, vpp_base + '_ext',  var, 'indianred', '-', "Extraction well")
+  plotSet(data, vpp_base + '_inj',  var, 'lightgreen', '-', "Injection well")
+  plotSet(data, vpp_base + '_frac', var, 'black', '-', "Fracture channel")
+  plotSet(data, vpp_base + '_ext',  var, 'indianred', '-', "Extraction well")
   ax.legend()
   plt.tight_layout()
   plt.savefig('final_' + var + '.png', dpi=300)
@@ -67,5 +63,4 @@ def makePlot(var, vpp_base, y_label):
 # makePlot('rho', 'Density [kg/m$^3$]')
 # makePlot('T', 'Temperature [K]')
 makePlot('p', 'p', 'Pressure [Pa]')
-# makePlot('rhouA', 'rhouA', 'Mass Flow Rate [kg/s]')
 makePlot('mass_flux', 'flux', 'Mass Flow Rate [kg/s]')
