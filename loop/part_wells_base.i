@@ -47,25 +47,25 @@
   #   K_d = 0
   #   initial_value = 0
   # []
-  [set_inlet_p0_ctrl]
-    type = SetRealValueControl
-    # parameter = Components/inlet/p0
-    parameter = Components/inlet/m_dot
-    # value = inlet_p0_ctrl:value
-    value = inlet_mdot_setpoint:value
-  []
+  # [set_inlet_p0_ctrl]
+  #   type = SetRealValueControl
+  #   # parameter = Components/inlet/p0
+  #   parameter = Components/inlet/m_dot
+  #   # value = inlet_p0_ctrl:value
+  #   value = inlet_mdot_setpoint:value
+  # []
   # [set_inlet_p0_ctrl]
   #   type = SetComponentRealValueControl
   #   component = inlet
   #   parameter = p0
   #   value = inlet_p0_ctrl:output
   # []
-  # [set_inlet_mdot_ctrl]
-  #   type = SetComponentRealValueControl
-  #   component = inlet
-  #   parameter = m_dot
-  #   value = inlet_mdot_setpoint:value
-  # []
+  [set_inlet_mdot_ctrl]
+    type = SetComponentRealValueControl
+    component = inlet
+    parameter = m_dot
+    value = inlet_mdot_setpoint:value
+  []
 []
 
 [Postprocessors]

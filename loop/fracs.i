@@ -4,6 +4,7 @@
 !include part_base.i
 
 [Components]
+  # fracture 1
   [frac1_wall1]
     type = SolidWall1Phase
     input = 'frac1:in'
@@ -20,7 +21,6 @@
     type = SolidWall1Phase
     input = 'frac1:out'
   []
-
   [junction_inj_frac1]
     type = DiracSource1Phase
     flow_channel = frac1
@@ -34,6 +34,38 @@
     point = ${point_frac1_ext}
     mass_source_rate = mdot_frac1_ext_main
     energy_source_rate = Edot_frac1_ext_main
+  []
+
+  # fracture 2
+  [frac2_wall1]
+    type = SolidWall1Phase
+    input = 'frac2:in'
+  []
+  [frac2]
+    type = FlowChannel1Phase
+    position = '${x_frac_left} 0 ${z_frac2}'
+    orientation = '1 0 0'
+    length = ${L_frac}
+    n_elems = ${n_elems_frac}
+    A = ${A_frac}
+  []
+  [frac2_wall2]
+    type = SolidWall1Phase
+    input = 'frac2:out'
+  []
+  [junction_inj_frac2]
+    type = DiracSource1Phase
+    flow_channel = frac2
+    point = ${point_frac2_inj}
+    mass_source_rate = mdot_frac2_inj_main
+    energy_source_rate = Edot_frac2_inj_main
+  []
+  [junction_ext_frac2]
+    type = DiracSource1Phase
+    flow_channel = frac2
+    point = ${point_frac2_ext}
+    mass_source_rate = mdot_frac2_ext_main
+    energy_source_rate = Edot_frac2_ext_main
   []
 []
 

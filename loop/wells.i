@@ -36,7 +36,7 @@ n_elems_frac_3 = 10
     n_elems = ${n_elems_injext_1}
     A = ${A_injext}
   []
-  [inj_junc]
+  [frac1_inj_junc]
     type = VolumeJunction1Phase
     connections = 'inj_1:out inj_2:in'
     position = ${point_frac1_inj}
@@ -95,13 +95,13 @@ n_elems_frac_3 = 10
   []
 
   # junctions
-  [inj_junc_flux]
+  [frac1_inj_junc_flux]
     type = VolumeJunctionCoupledFlux1Phase
     A_coupled = ${A_inj_frac1}
     pressure = p_frac1_inj_fn
     temperature = T_frac1_inj_fn
     normal_from_junction = '1 0 0'
-    volume_junction = inj_junc
+    volume_junction = frac1_inj_junc
   []
   [ext_junc_flux]
     type = VolumeJunctionCoupledFlux1Phase
@@ -159,7 +159,7 @@ n_elems_frac_3 = 10
   [mdot_frac1_inj_to_sub]
     type = MultiAppPostprocessorTransfer
     to_multi_app = fracs
-    from_postprocessor = inj_junc_flux:mass_flux
+    from_postprocessor = frac1_inj_junc_flux:mass_flux
     to_postprocessor = mdot_frac1_inj_main
   []
   [mdot_frac1_ext_to_sub]
@@ -171,7 +171,7 @@ n_elems_frac_3 = 10
   [Edot_frac1_inj_to_sub]
     type = MultiAppPostprocessorTransfer
     to_multi_app = fracs
-    from_postprocessor = inj_junc_flux:energy_flux
+    from_postprocessor = frac1_inj_junc_flux:energy_flux
     to_postprocessor = Edot_frac1_inj_main
   []
   [Edot_frac1_ext_to_sub]
