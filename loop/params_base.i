@@ -1,5 +1,6 @@
 x_inj = 0
 x_ext = 30
+x_middle = ${fparse 0.5 * (x_inj + x_ext)}
 
 z_frac1 = -20
 z_frac2 = -30

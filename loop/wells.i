@@ -3,9 +3,11 @@
 !include params_fracs.i
 
 L_injext_1 = ${fparse -z_frac1}
-L_injext_2 = ${fparse L_injext + z_frac1}
+L_injext_2 = ${fparse -z_frac2 + z_frac1}
+L_injext_3 = ${fparse L_injext + z_frac2}
 n_elems_injext_1 = 20
-n_elems_injext_2 = 30
+n_elems_injext_2 = 10
+n_elems_injext_3 = 20
 L_frac_1 = ${fparse x_inj - x_frac_left}
 L_frac_2 = ${fparse x_ext - x_inj}
 L_frac_3 = ${fparse L_frac - L_frac_1 - L_frac_2}
@@ -18,6 +20,9 @@ n_elems_frac_3 = 10
 
 [GlobalParams]
   scaling_factor_rhoEV = 1e-5
+  vpp_vars = 'p'
+  create_flux_vpp = true
+  multi_app = fracs
 []
 
 [Components]
@@ -34,7 +39,7 @@ n_elems_frac_3 = 10
     orientation = '0 0 -1'
     length = ${L_injext_1}
     n_elems = ${n_elems_injext_1}
-    A = ${A_injext}
+    A = ${A_inj}
   []
   [frac1_inj_junc]
     type = VolumeJunction1Phase
@@ -43,7 +48,14 @@ n_elems_frac_3 = 10
     initial_vel_x = 0
     initial_vel_y = 0
     initial_vel_z = 0
-    volume = ${fparse A_injext^(3/2)} # cube with A_injext side area
+    volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
+  []
+  [frac1_inj_junc_flux]
+    type = VolumeJunctionCoupledFlux1Phase
+    A_coupled = ${A_inj_frac1}
+    normal_from_junction = '1 0 0'
+    volume_junction = frac1_inj_junc
+    pp_suffix = frac1_inj
   []
   [inj_2]
     type = FlowChannel1Phase
@@ -51,11 +63,35 @@ n_elems_frac_3 = 10
     orientation = '0 0 -1'
     length = ${L_injext_2}
     n_elems = ${n_elems_injext_2}
-    A = ${A_injext}
+    A = ${A_inj}
+  []
+  [frac2_inj_junc]
+    type = VolumeJunction1Phase
+    connections = 'inj_2:out inj_3:in'
+    position = ${point_frac2_inj}
+    initial_vel_x = 0
+    initial_vel_y = 0
+    initial_vel_z = 0
+    volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
+  []
+  [frac2_inj_junc_flux]
+    type = VolumeJunctionCoupledFlux1Phase
+    A_coupled = ${A_inj_frac2}
+    normal_from_junction = '1 0 0'
+    volume_junction = frac2_inj_junc
+    pp_suffix = frac2_inj
+  []
+  [inj_3]
+    type = FlowChannel1Phase
+    position = ${point_frac2_inj}
+    orientation = '0 0 -1'
+    length = ${L_injext_3}
+    n_elems = ${n_elems_injext_3}
+    A = ${A_inj}
   []
   [inj_wall]
     type = SolidWall1Phase
-    input = 'inj_2:out'
+    input = 'inj_3:out'
   []
 
   # extraction
@@ -70,46 +106,59 @@ n_elems_frac_3 = 10
     orientation = '0 0 1'
     length = ${L_injext_1}
     n_elems = ${n_elems_injext_1}
-    A = ${A_injext}
+    A = ${A_ext}
   []
-  [ext_junc]
+  [frac1_ext_junc]
     type = VolumeJunction1Phase
     connections = 'ext_1:in ext_2:out'
     position = ${point_frac1_ext}
     initial_vel_x = 0
     initial_vel_y = 0
     initial_vel_z = 0
-    volume = ${fparse A_injext^(3/2)} # cube with A_injext side area
+    volume = ${fparse A_ext^(3/2)} # cube with A_ext side area
+  []
+  [frac1_ext_junc_flux]
+    type = VolumeJunctionCoupledFlux1Phase
+    A_coupled = ${A_ext_frac1}
+    normal_from_junction = '-1 0 0'
+    volume_junction = frac1_ext_junc
+    pp_suffix = frac1_ext
   []
   [ext_2]
     type = FlowChannel1Phase
-    position = '${x_ext} 0 ${z_wells_bottom}'
+    position = ${point_frac2_ext}
     orientation = '0 0 1'
     length = ${L_injext_2}
     n_elems = ${n_elems_injext_2}
-    A = ${A_injext}
+    A = ${A_ext}
+  []
+  [frac2_ext_junc]
+    type = VolumeJunction1Phase
+    connections = 'ext_2:in ext_3:out'
+    position = ${point_frac2_ext}
+    initial_vel_x = 0
+    initial_vel_y = 0
+    initial_vel_z = 0
+    volume = ${fparse A_ext^(3/2)} # cube with A_ext side area
+  []
+  [frac2_ext_junc_flux]
+    type = VolumeJunctionCoupledFlux1Phase
+    A_coupled = ${A_ext_frac2}
+    normal_from_junction = '-1 0 0'
+    volume_junction = frac2_ext_junc
+    pp_suffix = frac2_ext
+  []
+  [ext_3]
+    type = FlowChannel1Phase
+    position = '${x_ext} 0 ${z_wells_bottom}'
+    orientation = '0 0 1'
+    length = ${L_injext_3}
+    n_elems = ${n_elems_injext_3}
+    A = ${A_ext}
   []
   [ext_wall]
     type = SolidWall1Phase
-    input = 'ext_2:in'
-  []
-
-  # junctions
-  [frac1_inj_junc_flux]
-    type = VolumeJunctionCoupledFlux1Phase
-    A_coupled = ${A_inj_frac1}
-    pressure = p_frac1_inj_fn
-    temperature = T_frac1_inj_fn
-    normal_from_junction = '1 0 0'
-    volume_junction = frac1_inj_junc
-  []
-  [ext_junc_flux]
-    type = VolumeJunctionCoupledFlux1Phase
-    A_coupled = ${A_ext_frac1}
-    pressure = p_frac1_ext_fn
-    temperature = T_frac1_ext_fn
-    normal_from_junction = '-1 0 0'
-    volume_junction = ext_junc
+    input = 'ext_3:in'
   []
 []
 
@@ -122,136 +171,31 @@ n_elems_frac_3 = 10
   []
 []
 
-[Transfers]
-  [p_frac1_inj_from_sub]
-    type = MultiAppPostprocessorTransfer
-    from_multi_app = fracs
-    from_postprocessor = p_frac1_inj
-    to_postprocessor = p_frac1_inj_sub
-    reduction_type = average
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_frac1_ext_from_sub]
-    type = MultiAppPostprocessorTransfer
-    from_multi_app = fracs
-    from_postprocessor = p_frac1_ext
-    to_postprocessor = p_frac1_ext_sub
-    reduction_type = average
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [T_frac1_inj_from_sub]
-    type = MultiAppPostprocessorTransfer
-    from_multi_app = fracs
-    from_postprocessor = T_frac1_inj
-    to_postprocessor = T_frac1_inj_sub
-    reduction_type = average
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [T_frac1_ext_from_sub]
-    type = MultiAppPostprocessorTransfer
-    from_multi_app = fracs
-    from_postprocessor = T_frac1_ext
-    to_postprocessor = T_frac1_ext_sub
-    reduction_type = average
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-
-  [mdot_frac1_inj_to_sub]
-    type = MultiAppPostprocessorTransfer
-    to_multi_app = fracs
-    from_postprocessor = frac1_inj_junc_flux:mass_flux
-    to_postprocessor = mdot_frac1_inj_main
-  []
-  [mdot_frac1_ext_to_sub]
-    type = MultiAppPostprocessorTransfer
-    to_multi_app = fracs
-    from_postprocessor = ext_junc_flux:mass_flux
-    to_postprocessor = mdot_frac1_ext_main
-  []
-  [Edot_frac1_inj_to_sub]
-    type = MultiAppPostprocessorTransfer
-    to_multi_app = fracs
-    from_postprocessor = frac1_inj_junc_flux:energy_flux
-    to_postprocessor = Edot_frac1_inj_main
-  []
-  [Edot_frac1_ext_to_sub]
-    type = MultiAppPostprocessorTransfer
-    to_multi_app = fracs
-    from_postprocessor = ext_junc_flux:energy_flux
-    to_postprocessor = Edot_frac1_ext_main
-  []
-[]
-
-[Functions]
-  [p_frac1_inj_fn]
-    type = ParsedFunction
-    expression = 'p'
-    symbol_names = 'p'
-    symbol_values = 'p_frac1_inj_sub'
-  []
-  [p_frac1_ext_fn]
-    type = ParsedFunction
-    expression = 'p'
-    symbol_names = 'p'
-    symbol_values = 'p_frac1_ext_sub'
-  []
-  [T_frac1_inj_fn]
-    type = ParsedFunction
-    expression = 'T'
-    symbol_names = 'T'
-    symbol_values = 'T_frac1_inj_sub'
-  []
-  [T_frac1_ext_fn]
-    type = ParsedFunction
-    expression = 'T'
-    symbol_names = 'T'
-    symbol_values = 'T_frac1_ext_sub'
-  []
-[]
-
 [Postprocessors]
-  # [mdot_frac1_inj]
-  #   type = DiracJunction1PhasePostprocessor
-  #   dirac_junction_1phase_uo = junction_inj_frac1:uo
-  #   equation = mass
-  #   get_primary_side = false
-  #   execute_on = 'TIMESTEP_END'
-  # []
-  # [mdot_frac1_ext]
-  #   type = DiracJunction1PhasePostprocessor
-  #   dirac_junction_1phase_uo = junction_ext_frac1:uo
-  #   equation = mass
-  #   get_primary_side = false
-  #   execute_on = 'TIMESTEP_END'
-  # []
-  # [Edot_frac1_inj]
-  #   type = DiracJunction1PhasePostprocessor
-  #   dirac_junction_1phase_uo = junction_inj_frac1:uo
-  #   equation = energy
-  #   get_primary_side = false
-  #   execute_on = 'TIMESTEP_END'
-  # []
-  # [Edot_frac1_ext]
-  #   type = DiracJunction1PhasePostprocessor
-  #   dirac_junction_1phase_uo = junction_ext_frac1:uo
-  #   equation = energy
-  #   get_primary_side = false
-  #   execute_on = 'TIMESTEP_END'
-  # []
-
-  [p_frac1_inj_sub]
-    type = Receiver
+  [mass_flux_inlet]
+    type = ADFlowBoundaryFlux1Phase
+    boundary = inlet
+    equation = mass
+    execute_on = 'INITIAL TIMESTEP_END'
   []
-  [p_frac1_ext_sub]
-    type = Receiver
+  [mass_flux_outlet]
+    type = ADFlowBoundaryFlux1Phase
+    boundary = outlet
+    equation = mass
+    execute_on = 'INITIAL TIMESTEP_END'
   []
-  [T_frac1_inj_sub]
-    type = Receiver
+  [p_inlet]
+    type = SideAverageValue
+    boundary = inlet
+    variable = p
+    execute_on = 'INITIAL TIMESTEP_END'
   []
-  [T_frac1_ext_sub]
-    type = Receiver
+  [p_outlet]
+    type = SideAverageValue
+    boundary = outlet
+    variable = p
+    execute_on = 'INITIAL TIMESTEP_END'
   []
-
   # [max_p_change]
   #   type = ADElementExtremeFunctorValue
   #   value_type = max
@@ -261,75 +205,56 @@ n_elems_frac_3 = 10
   # []
 []
 
-[VectorPostprocessors]
-  [p_inj_1]
-    type = ElementValueSampler
-    variable = p
-    block = 'inj_1'
-    sort_by = z
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_inj_2]
-    type = ElementValueSampler
-    variable = p
-    block = 'inj_2'
-    sort_by = z
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_ext_1]
-    type = ElementValueSampler
-    variable = p
-    block = 'ext_1'
-    sort_by = z
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_ext_2]
-    type = ElementValueSampler
-    variable = p
-    block = 'ext_2'
-    sort_by = z
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  # [rhouA_inj]
-  #   type = ElementValueSampler
-  #   variable = rhouA
-  #   block = 'inj'
-  #   sort_by = z
-  #   execute_on = 'INITIAL TIMESTEP_END'
-  # []
-  [flux_inj_1]
-    type = NumericalFlux3EqnInternalValues
-    block = 'inj_1'
-    sort_by = z
-    numerical_flux = inj_1:numerical_flux
-    A_linear = A_linear
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [flux_inj_2]
-    type = NumericalFlux3EqnInternalValues
-    block = 'inj_2'
-    sort_by = z
-    numerical_flux = inj_2:numerical_flux
-    A_linear = A_linear
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [flux_ext_1]
-    type = NumericalFlux3EqnInternalValues
-    block = 'ext_1'
-    sort_by = z
-    numerical_flux = ext_1:numerical_flux
-    A_linear = A_linear
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [flux_ext_2]
-    type = NumericalFlux3EqnInternalValues
-    block = 'ext_2'
-    sort_by = z
-    numerical_flux = ext_2:numerical_flux
-    A_linear = A_linear
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-[]
+# [VectorPostprocessors]
+#   [inj_1:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'inj_1'
+#     sort_by = z
+#     numerical_flux = inj_1:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+#   [inj_2:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'inj_2'
+#     sort_by = z
+#     numerical_flux = inj_2:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+#   [inj_3:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'inj_3'
+#     sort_by = z
+#     numerical_flux = inj_3:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+#   [ext_1:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'ext_1'
+#     sort_by = z
+#     numerical_flux = ext_1:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+#   [ext_2:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'ext_2'
+#     sort_by = z
+#     numerical_flux = ext_2:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+#   [ext_3:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'ext_3'
+#     sort_by = z
+#     numerical_flux = ext_3:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+# []
 
 # [FunctorMaterials]
 #   [p_change_fmat]

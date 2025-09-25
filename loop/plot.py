@@ -43,7 +43,7 @@ def plotSet(data, vpp, var, color, linestyle, label):
   var_values = getVarValues(data, vpp, var)
   plt.plot(x, var_values, linestyle=linestyle, color=color, marker='.', label=label)
 
-def makePlot(var, vpp_base, y_label):
+def makePlot(var, vpp_suffix, y_label):
   plt.figure(figsize=(8, 6))
   plt.rc('text', usetex=True)
   plt.rc('font', family='sans-serif')
@@ -51,11 +51,14 @@ def makePlot(var, vpp_base, y_label):
   ax.get_yaxis().get_major_formatter().set_useOffset(False)
   plt.xlabel("x Position [m]")
   plt.ylabel(y_label)
-  plotSet(wells_data, vpp_base + '_inj_1',  var, 'lightgreen', '-', "Injection 1")
-  plotSet(wells_data, vpp_base + '_inj_2',  var, 'darkgreen', '-', "Injection 2")
-  plotSet(fracs_data, vpp_base + '_frac1', var, 'indianred', '-', "Fracture 1")
-  plotSet(wells_data, vpp_base + '_ext_1',  var, 'cornflowerblue', '-', "Extraction 1")
-  plotSet(wells_data, vpp_base + '_ext_2',  var, 'royalblue', '-', "Extraction 2")
+  plotSet(wells_data, 'inj_1:' + vpp_suffix,  var, 'lightgreen', '-', "Injection 1")
+  plotSet(wells_data, 'inj_2:' + vpp_suffix,  var, 'limegreen', '-', "Injection 2")
+  plotSet(wells_data, 'inj_3:' + vpp_suffix,  var, 'forestgreen', '-', "Injection 3")
+  plotSet(fracs_data, 'frac1:' + vpp_suffix, var, 'orange', '-', "Fracture 1")
+  plotSet(fracs_data, 'frac2:' + vpp_suffix, var, 'cornflowerblue', '-', "Fracture 2")
+  plotSet(wells_data, 'ext_1:' + vpp_suffix,  var, 'lightcoral', '-', "Extraction 1")
+  plotSet(wells_data, 'ext_2:' + vpp_suffix,  var, 'tomato', '-', "Extraction 2")
+  plotSet(wells_data, 'ext_3:' + vpp_suffix,  var, 'firebrick', '-', "Extraction 3")
   # plotSet(data, vpp_base + '_ext',  var, 'indianred', '-', "Extraction well")
   ax.legend()
   plt.tight_layout()
@@ -66,6 +69,6 @@ def makePlot(var, vpp_base, y_label):
 
 # makePlot('rho', 'Density [kg/m$^3$]')
 # makePlot('T', 'Temperature [K]')
-makePlot('p', 'p', 'Pressure [Pa]')
+makePlot('p', 'vars_vpp', 'Pressure [Pa]')
 # makePlot('rhouA', 'rhouA', 'Mass Flow Rate [kg/s]')
-makePlot('mass_flux', 'flux', 'Mass Flow Rate [kg/s]')
+makePlot('mass_flux', 'flux_vpp', 'Mass Flow Rate [kg/s]')

@@ -4,7 +4,8 @@ n_elems_injext = 50
 
 z_wells_bottom = ${fparse -L_injext}
 
-A_injext = 0.1
+A_inj = 0.1
+A_ext = 0.1
 
 A_inj_frac1 = 1e-2
 A_ext_frac1 = 1e-2

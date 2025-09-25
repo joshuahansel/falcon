@@ -34,7 +34,7 @@ n_elems_frac_3 = 10
     orientation = '0 0 -1'
     length = ${L_injext_1}
     n_elems = ${n_elems_injext_1}
-    A = ${A_injext}
+    A = ${A_inj}
   []
   [inj_junc]
     type = VolumeJunction1Phase
@@ -43,7 +43,7 @@ n_elems_frac_3 = 10
     initial_vel_x = 0
     initial_vel_y = 0
     initial_vel_z = 0
-    volume = ${fparse A_injext^(3/2)} # cube with A_injext side area
+    volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
   []
   [inj_2]
     type = FlowChannel1Phase
@@ -51,7 +51,7 @@ n_elems_frac_3 = 10
     orientation = '0 0 -1'
     length = ${L_injext_2}
     n_elems = ${n_elems_injext_2}
-    A = ${A_injext}
+    A = ${A_inj}
   []
   [inj_wall]
     type = SolidWall1Phase
@@ -104,7 +104,7 @@ n_elems_frac_3 = 10
     orientation = '0 0 1'
     length = ${L_injext_1}
     n_elems = ${n_elems_injext_1}
-    A = ${A_injext}
+    A = ${A_inj}
   []
   [ext_junc]
     type = VolumeJunction1Phase
@@ -113,7 +113,7 @@ n_elems_frac_3 = 10
     initial_vel_x = 0
     initial_vel_y = 0
     initial_vel_z = 0
-    volume = ${fparse A_injext^(3/2)} # cube with A_injext side area
+    volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
   []
   [ext_2]
     type = FlowChannel1Phase
@@ -121,7 +121,7 @@ n_elems_frac_3 = 10
     orientation = '0 0 1'
     length = ${L_injext_2}
     n_elems = ${n_elems_injext_2}
-    A = ${A_injext}
+    A = ${A_inj}
   []
   [ext_wall]
     type = SolidWall1Phase

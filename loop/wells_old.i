@@ -18,7 +18,7 @@
     orientation = '0 0 -1'
     length = ${L_injext}
     n_elems = ${n_elems_injext}
-    A = ${A_injext}
+    A = ${A_inj}
   []
   [inj_wall]
     type = SolidWall1Phase
@@ -37,7 +37,7 @@
     orientation = '0 0 1'
     length = ${L_injext}
     n_elems = ${n_elems_injext}
-    A = ${A_injext}
+    A = ${A_inj}
   []
   [ext_wall]
     type = SolidWall1Phase

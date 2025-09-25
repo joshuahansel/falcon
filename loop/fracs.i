@@ -3,6 +3,11 @@
 
 !include part_base.i
 
+[GlobalParams]
+  vpp_vars = 'p'
+  create_flux_vpp = true
+[]
+
 [Components]
   # fracture 1
   [frac1_wall1]
@@ -15,7 +20,7 @@
     orientation = '1 0 0'
     length = ${L_frac}
     n_elems = ${n_elems_frac}
-    A = ${A_frac}
+    A = ${A_frac1}
   []
   [frac1_wall2]
     type = SolidWall1Phase
@@ -25,15 +30,15 @@
     type = DiracSource1Phase
     flow_channel = frac1
     point = ${point_frac1_inj}
-    mass_source_rate = mdot_frac1_inj_main
-    energy_source_rate = Edot_frac1_inj_main
+    mass_source_rate = mass_flux_frac1_inj
+    energy_source_rate = energy_flux_frac1_inj
   []
   [junction_ext_frac1]
     type = DiracSource1Phase
     flow_channel = frac1
     point = ${point_frac1_ext}
-    mass_source_rate = mdot_frac1_ext_main
-    energy_source_rate = Edot_frac1_ext_main
+    mass_source_rate = mass_flux_frac1_ext
+    energy_source_rate = energy_flux_frac1_ext
   []
 
   # fracture 2
@@ -47,7 +52,7 @@
     orientation = '1 0 0'
     length = ${L_frac}
     n_elems = ${n_elems_frac}
-    A = ${A_frac}
+    A = ${A_frac2}
   []
   [frac2_wall2]
     type = SolidWall1Phase
@@ -57,19 +62,37 @@
     type = DiracSource1Phase
     flow_channel = frac2
     point = ${point_frac2_inj}
-    mass_source_rate = mdot_frac2_inj_main
-    energy_source_rate = Edot_frac2_inj_main
+    mass_source_rate = mass_flux_frac2_inj
+    energy_source_rate = energy_flux_frac2_inj
   []
   [junction_ext_frac2]
     type = DiracSource1Phase
     flow_channel = frac2
     point = ${point_frac2_ext}
-    mass_source_rate = mdot_frac2_ext_main
-    energy_source_rate = Edot_frac2_ext_main
+    mass_source_rate = mass_flux_frac2_ext
+    energy_source_rate = energy_flux_frac2_ext
+  []
+[]
+
+[Functions]
+  [mass_flux_frac1_fn]
+    type = PiecewiseLinearFromVectorPostprocessor
+    vectorpostprocessor_name = frac1:flux_vpp
+    component = x
+    argument_column = x
+    value_column = mass_flux
+  []
+  [mass_flux_frac2_fn]
+    type = PiecewiseLinearFromVectorPostprocessor
+    vectorpostprocessor_name = frac2:flux_vpp
+    component = x
+    argument_column = x
+    value_column = mass_flux
   []
 []
 
 [Postprocessors]
+  # fracture 1
   [p_frac1_inj]
     type = PointValue
     point = ${point_frac1_inj}
@@ -94,44 +117,100 @@
     variable = T
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [mdot_frac1_inj_main]
+  [mass_flux_frac1_inj]
     type = Receiver
   []
-  [mdot_frac1_ext_main]
+  [mass_flux_frac1_ext]
     type = Receiver
   []
-  [Edot_frac1_inj_main]
+  [energy_flux_frac1_inj]
     type = Receiver
   []
-  [Edot_frac1_ext_main]
+  [energy_flux_frac1_ext]
     type = Receiver
+  []
+  [p_frac1]
+    type = PointValue
+    variable = p
+    point = '${x_middle} 0 ${z_frac1}'
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [mass_flux_frac1]
+    type = FunctionValuePostprocessor
+    function = mass_flux_frac1_fn
+    point = '${x_middle} 0 ${z_frac1}'
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+
+  # fracture 2
+  [p_frac2_inj]
+    type = PointValue
+    point = ${point_frac2_inj}
+    variable = p
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [p_frac2_ext]
+    type = PointValue
+    point = ${point_frac2_ext}
+    variable = p
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [T_frac2_inj]
+    type = PointValue
+    point = ${point_frac2_inj}
+    variable = T
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [T_frac2_ext]
+    type = PointValue
+    point = ${point_frac2_ext}
+    variable = T
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [mass_flux_frac2_inj]
+    type = Receiver
+  []
+  [mass_flux_frac2_ext]
+    type = Receiver
+  []
+  [energy_flux_frac2_inj]
+    type = Receiver
+  []
+  [energy_flux_frac2_ext]
+    type = Receiver
+  []
+  [p_frac2]
+    type = PointValue
+    variable = p
+    point = '${x_middle} 0 ${z_frac2}'
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [mass_flux_frac2]
+    type = FunctionValuePostprocessor
+    function = mass_flux_frac2_fn
+    point = '${x_middle} 0 ${z_frac2}'
+    execute_on = 'INITIAL TIMESTEP_END'
   []
 []
 
-[VectorPostprocessors]
-  [p_frac1]
-    type = ElementValueSampler
-    variable = p
-    block = 'frac1'
-    sort_by = x
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  # [rhouA_frac1]
-  #   type = ElementValueSampler
-  #   variable = rhouA
-  #   block = 'frac1'
-  #   sort_by = x
-  #   execute_on = 'INITIAL TIMESTEP_END'
-  # []
-  [flux_frac1]
-    type = NumericalFlux3EqnInternalValues
-    block = 'frac1'
-    sort_by = z
-    numerical_flux = frac1:numerical_flux
-    A_linear = A_linear
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-[]
+# [VectorPostprocessors]
+#   [frac1:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'frac1'
+#     sort_by = x
+#     numerical_flux = frac1:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+#   [frac2:flux]
+#     type = NumericalFlux3EqnInternalValues
+#     block = 'frac2'
+#     sort_by = x
+#     numerical_flux = frac2:numerical_flux
+#     A_linear = A_linear
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   []
+# []
 
 [Outputs]
   file_base = fracs
