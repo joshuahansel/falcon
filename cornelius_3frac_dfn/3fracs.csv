@@ -1,0 +1,4 @@
+FractureX[m],FractureY[m],FractureZ[m],FractureRadius[m],Trend[deg],Plunge[deg],Strike[deg],Dip_Angle[deg],Aperture[m],Permeability[m2],Compressibility[1/kPa],Area[m2],Fracture ID
+-45.59345894,214.77041129,469.54911936,150,85,0,175,90,5e-05,1e-14,7.2e-06,70685.83471,124A
+-13.34844902,218.24568004,454.55813045,150,85,0,175,90,5e-05,1e-14,7.2e-06,70685.83471,106A
+53.8865544,225.4920635,423.29998562,150,85,0,175,90,5e-05,1e-14,7.2e-06,70685.83471,074B
