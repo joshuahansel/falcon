@@ -569,46 +569,6 @@ porepressure_outflow_component = 0
     variable = Tdiff
     point = '38.51767602 53.58355641 540.3684522'
   []
-
-  # pressure
-  [p_inj1]
-    type = PointValue
-    variable = porepressure
-    point = ${injection_point1}
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_inj2]
-    type = PointValue
-    variable = porepressure
-    point = ${injection_point2}
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_inj3]
-    type = PointValue
-    variable = porepressure
-    point = ${injection_point3}
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_pro1]
-    type = PointValue
-    variable = porepressure
-    point = ${production_point1}
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_pro2]
-    type = PointValue
-    variable = porepressure
-    point = ${production_point2}
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [p_pro3]
-    type = PointValue
-    variable = porepressure
-    point = ${production_point3}
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  # temperature
-
 []
 
 
