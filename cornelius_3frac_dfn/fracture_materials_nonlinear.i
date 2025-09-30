@@ -1,7 +1,7 @@
 # created by write_frac_materials_input.py
-# see Materials Property section in porous flow notes: 
-# https://mooseframework.inl.gov/modules/porous_flow/multiapp_fracture_flow_PorousFlow_3D.html 
-# DFN from fname 
+# see Materials Property section in porous flow notes:
+# https://mooseframework.inl.gov/modules/porous_flow/multiapp_fracture_flow_PorousFlow_3D.html
+# DFN from fname
 all_frac_ids = "fracture1 fracture2 fracture3 "
 
 frac_aperture_1 = ${frac_aperature}
@@ -18,7 +18,7 @@ one_over_bulk = 1.4e-11 #bulk modulus = 70GPa
   [porosity_fracture1]
     type = PorousFlowPorosityLinear
     porosity_ref = ${frac_aperture_1}
-    P_ref = insitu_pp
+    P_ref = initial_p
     P_coeff = ${one_over_bulk}
     porosity_min = ${fparse frac_aperture_1/10}
     block = fracture1
@@ -26,7 +26,7 @@ one_over_bulk = 1.4e-11 #bulk modulus = 70GPa
   [porosity_fracture2]
     type = PorousFlowPorosityLinear
     porosity_ref = ${frac_aperture_2}
-    P_ref = insitu_pp
+    P_ref = initial_p
     P_coeff = ${one_over_bulk}
     porosity_min = ${fparse frac_aperture_2/10}
     block = fracture2
@@ -34,7 +34,7 @@ one_over_bulk = 1.4e-11 #bulk modulus = 70GPa
   [porosity_fracture3]
     type = PorousFlowPorosityLinear
     porosity_ref = ${frac_aperture_3}
-    P_ref = insitu_pp
+    P_ref = initial_p
     P_coeff = ${one_over_bulk}
     porosity_min = ${fparse frac_aperture_3/10}
     block = fracture3

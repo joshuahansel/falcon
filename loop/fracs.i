@@ -30,15 +30,15 @@
     type = DiracSource1Phase
     flow_channel = frac1
     point = ${point_frac1_inj}
-    mass_source_rate = mass_flux_frac1_inj
-    energy_source_rate = energy_flux_frac1_inj
+    mass_source_rate = mass_rate_inj1
+    energy_source_rate = energy_rate_inj1
   []
   [junction_ext_frac1]
     type = DiracSource1Phase
     flow_channel = frac1
     point = ${point_frac1_ext}
-    mass_source_rate = mass_flux_frac1_ext
-    energy_source_rate = energy_flux_frac1_ext
+    mass_source_rate = mass_rate_pro1
+    energy_source_rate = energy_rate_pro1
   []
 
   # fracture 2
@@ -62,15 +62,15 @@
     type = DiracSource1Phase
     flow_channel = frac2
     point = ${point_frac2_inj}
-    mass_source_rate = mass_flux_frac2_inj
-    energy_source_rate = energy_flux_frac2_inj
+    mass_source_rate = mass_rate_inj2
+    energy_source_rate = energy_rate_inj2
   []
   [junction_ext_frac2]
     type = DiracSource1Phase
     flow_channel = frac2
     point = ${point_frac2_ext}
-    mass_source_rate = mass_flux_frac2_ext
-    energy_source_rate = energy_flux_frac2_ext
+    mass_source_rate = mass_rate_pro2
+    energy_source_rate = energy_rate_pro2
   []
 []
 
@@ -93,40 +93,40 @@
 
 [Postprocessors]
   # fracture 1
-  [p_frac1_inj]
+  [p_inj1]
     type = PointValue
     point = ${point_frac1_inj}
     variable = p
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [p_frac1_ext]
+  [p_pro1]
     type = PointValue
     point = ${point_frac1_ext}
     variable = p
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [T_frac1_inj]
+  [T_inj1]
     type = PointValue
     point = ${point_frac1_inj}
     variable = T
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [T_frac1_ext]
+  [T_pro1]
     type = PointValue
     point = ${point_frac1_ext}
     variable = T
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [mass_flux_frac1_inj]
+  [mass_rate_inj1]
     type = Receiver
   []
-  [mass_flux_frac1_ext]
+  [mass_rate_pro1]
     type = Receiver
   []
-  [energy_flux_frac1_inj]
+  [energy_rate_inj1]
     type = Receiver
   []
-  [energy_flux_frac1_ext]
+  [energy_rate_pro1]
     type = Receiver
   []
   [p_frac1]
@@ -135,7 +135,7 @@
     point = '${x_middle} 0 ${z_frac1}'
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [mass_flux_frac1]
+  [mass_rate_frac1]
     type = FunctionValuePostprocessor
     function = mass_flux_frac1_fn
     point = '${x_middle} 0 ${z_frac1}'
@@ -143,40 +143,40 @@
   []
 
   # fracture 2
-  [p_frac2_inj]
+  [p_inj2]
     type = PointValue
     point = ${point_frac2_inj}
     variable = p
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [p_frac2_ext]
+  [p_pro2]
     type = PointValue
     point = ${point_frac2_ext}
     variable = p
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [T_frac2_inj]
+  [T_inj2]
     type = PointValue
     point = ${point_frac2_inj}
     variable = T
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [T_frac2_ext]
+  [T_pro2]
     type = PointValue
     point = ${point_frac2_ext}
     variable = T
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [mass_flux_frac2_inj]
+  [mass_rate_inj2]
     type = Receiver
   []
-  [mass_flux_frac2_ext]
+  [mass_rate_pro2]
     type = Receiver
   []
-  [energy_flux_frac2_inj]
+  [energy_rate_inj2]
     type = Receiver
   []
-  [energy_flux_frac2_ext]
+  [energy_rate_pro2]
     type = Receiver
   []
   [p_frac2]
@@ -185,7 +185,7 @@
     point = '${x_middle} 0 ${z_frac2}'
     execute_on = 'INITIAL TIMESTEP_END'
   []
-  [mass_flux_frac2]
+  [mass_rate_frac2]
     type = FunctionValuePostprocessor
     function = mass_flux_frac2_fn
     point = '${x_middle} 0 ${z_frac2}'

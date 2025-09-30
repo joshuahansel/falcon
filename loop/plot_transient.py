@@ -31,4 +31,4 @@ def makePlot(var, y_label):
   plt.savefig(var + '_transient.png', dpi=300)
 
 makePlot('p', 'Pressure [Pa]')
-makePlot('mass_flux', 'Mass Flow Rate [kg/s]')
+makePlot('mass_rate', 'Mass Flow Rate [kg/s]')

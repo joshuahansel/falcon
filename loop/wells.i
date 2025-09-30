@@ -18,6 +18,9 @@ n_elems_frac_3 = 10
 !include part_base.i
 !include part_wells_base.i
 
+inj_junction_volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
+pro_junction_volume = ${fparse A_ext^(3/2)} # cube with A_pro side area
+
 [GlobalParams]
   scaling_factor_rhoEV = 1e-5
   vpp_vars = 'p'
@@ -25,141 +28,177 @@ n_elems_frac_3 = 10
   multi_app = fracs
 []
 
+[ActionComponents]
+  [inj]
+    type = InjectionWell
+    surface_point = '${x_inj} 0 0'
+    junction_points = '${point_frac1_inj} ${point_frac2_inj}'
+    end_point = '${x_inj} 0 -${L_injext}'
+    section_n_elems = '${n_elems_injext_1} ${n_elems_injext_2} ${n_elems_injext_3}'
+    area = ${A_inj}
+    junction_coupling_areas = '${A_inj_frac1} ${A_inj_frac2}'
+    fracture_direction = '1 0 0'
+    junction_volume = ${inj_junction_volume}
+    inlet_mass_flow_rate = inlet_mdot_fn
+    inlet_temperature = ${T_inlet}
+    initial_pressure = initial_p_fn
+    initial_temperature = ${T_inlet}
+    fluid_properties = fp_water
+    multi_app = fracs
+  []
+  [pro]
+    type = ProductionWell
+    surface_point = '${x_ext} 0 0'
+    junction_points = '${point_frac1_ext} ${point_frac2_ext}'
+    end_point = '${x_ext} 0 -${L_injext}'
+    section_n_elems = '${n_elems_injext_1} ${n_elems_injext_2} ${n_elems_injext_3}'
+    area = ${A_ext}
+    junction_coupling_areas = '${A_ext_frac1} ${A_ext_frac2}'
+    fracture_direction = '-1 0 0'
+    junction_volume = ${pro_junction_volume}
+    outlet_pressure = ${p_outlet}
+    initial_pressure = initial_p_fn
+    initial_temperature = ${T_inlet}
+    fluid_properties = fp_water
+    multi_app = fracs
+  []
+[]
+
 [Components]
   # injection
-  [inlet]
-    type = InletMassFlowRateTemperature1Phase
-    input = 'inj_1:in'
-    m_dot = 0 # controlled
-    T = ${T_inlet}
-  []
-  [inj_1]
-    type = FlowChannel1Phase
-    position = '${x_inj} 0 0'
-    orientation = '0 0 -1'
-    length = ${L_injext_1}
-    n_elems = ${n_elems_injext_1}
-    A = ${A_inj}
-  []
-  [frac1_inj_junc]
-    type = VolumeJunction1Phase
-    connections = 'inj_1:out inj_2:in'
-    position = ${point_frac1_inj}
-    initial_vel_x = 0
-    initial_vel_y = 0
-    initial_vel_z = 0
-    volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
-  []
-  [frac1_inj_junc_flux]
-    type = VolumeJunctionCoupledFlux1Phase
-    A_coupled = ${A_inj_frac1}
-    normal_from_junction = '1 0 0'
-    volume_junction = frac1_inj_junc
-    pp_suffix = frac1_inj
-  []
-  [inj_2]
-    type = FlowChannel1Phase
-    position = ${point_frac1_inj}
-    orientation = '0 0 -1'
-    length = ${L_injext_2}
-    n_elems = ${n_elems_injext_2}
-    A = ${A_inj}
-  []
-  [frac2_inj_junc]
-    type = VolumeJunction1Phase
-    connections = 'inj_2:out inj_3:in'
-    position = ${point_frac2_inj}
-    initial_vel_x = 0
-    initial_vel_y = 0
-    initial_vel_z = 0
-    volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
-  []
-  [frac2_inj_junc_flux]
-    type = VolumeJunctionCoupledFlux1Phase
-    A_coupled = ${A_inj_frac2}
-    normal_from_junction = '1 0 0'
-    volume_junction = frac2_inj_junc
-    pp_suffix = frac2_inj
-  []
-  [inj_3]
-    type = FlowChannel1Phase
-    position = ${point_frac2_inj}
-    orientation = '0 0 -1'
-    length = ${L_injext_3}
-    n_elems = ${n_elems_injext_3}
-    A = ${A_inj}
-  []
-  [inj_wall]
-    type = SolidWall1Phase
-    input = 'inj_3:out'
-  []
+  # [inlet]
+  #   type = InletMassFlowRateTemperature1Phase
+  #   input = 'inj_1:in'
+  #   m_dot = 0 # controlled
+  #   T = ${T_inlet}
+  # []
+  # [inj_1]
+  #   type = FlowChannel1Phase
+  #   position = '${x_inj} 0 0'
+  #   orientation = '0 0 -1'
+  #   length = ${L_injext_1}
+  #   n_elems = ${n_elems_injext_1}
+  #   A = ${A_inj}
+  # []
+  # [frac1_inj_junc]
+  #   type = VolumeJunction1Phase
+  #   connections = 'inj_1:out inj_2:in'
+  #   position = ${point_frac1_inj}
+  #   initial_vel_x = 0
+  #   initial_vel_y = 0
+  #   initial_vel_z = 0
+  #   volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
+  # []
+  # [frac1_inj_junc_flux]
+  #   type = VolumeJunctionCoupledFlux1Phase
+  #   A_coupled = ${A_inj_frac1}
+  #   normal_from_junction = '1 0 0'
+  #   volume_junction = frac1_inj_junc
+  #   pp_suffix = frac1_inj
+  # []
+  # [inj_2]
+  #   type = FlowChannel1Phase
+  #   position = ${point_frac1_inj}
+  #   orientation = '0 0 -1'
+  #   length = ${L_injext_2}
+  #   n_elems = ${n_elems_injext_2}
+  #   A = ${A_inj}
+  # []
+  # [frac2_inj_junc]
+  #   type = VolumeJunction1Phase
+  #   connections = 'inj_2:out inj_3:in'
+  #   position = ${point_frac2_inj}
+  #   initial_vel_x = 0
+  #   initial_vel_y = 0
+  #   initial_vel_z = 0
+  #   volume = ${fparse A_inj^(3/2)} # cube with A_inj side area
+  # []
+  # [frac2_inj_junc_flux]
+  #   type = VolumeJunctionCoupledFlux1Phase
+  #   A_coupled = ${A_inj_frac2}
+  #   normal_from_junction = '1 0 0'
+  #   volume_junction = frac2_inj_junc
+  #   pp_suffix = frac2_inj
+  # []
+  # [inj_3]
+  #   type = FlowChannel1Phase
+  #   position = ${point_frac2_inj}
+  #   orientation = '0 0 -1'
+  #   length = ${L_injext_3}
+  #   n_elems = ${n_elems_injext_3}
+  #   A = ${A_inj}
+  # []
+  # [inj_wall]
+  #   type = SolidWall1Phase
+  #   input = 'inj_3:out'
+  # []
 
   # extraction
-  [outlet]
-    type = Outlet1Phase
-    input = 'ext_1:out'
-    p = ${p_outlet}
-  []
-  [ext_1]
-    type = FlowChannel1Phase
-    position = ${point_frac1_ext}
-    orientation = '0 0 1'
-    length = ${L_injext_1}
-    n_elems = ${n_elems_injext_1}
-    A = ${A_ext}
-  []
-  [frac1_ext_junc]
-    type = VolumeJunction1Phase
-    connections = 'ext_1:in ext_2:out'
-    position = ${point_frac1_ext}
-    initial_vel_x = 0
-    initial_vel_y = 0
-    initial_vel_z = 0
-    volume = ${fparse A_ext^(3/2)} # cube with A_ext side area
-  []
-  [frac1_ext_junc_flux]
-    type = VolumeJunctionCoupledFlux1Phase
-    A_coupled = ${A_ext_frac1}
-    normal_from_junction = '-1 0 0'
-    volume_junction = frac1_ext_junc
-    pp_suffix = frac1_ext
-  []
-  [ext_2]
-    type = FlowChannel1Phase
-    position = ${point_frac2_ext}
-    orientation = '0 0 1'
-    length = ${L_injext_2}
-    n_elems = ${n_elems_injext_2}
-    A = ${A_ext}
-  []
-  [frac2_ext_junc]
-    type = VolumeJunction1Phase
-    connections = 'ext_2:in ext_3:out'
-    position = ${point_frac2_ext}
-    initial_vel_x = 0
-    initial_vel_y = 0
-    initial_vel_z = 0
-    volume = ${fparse A_ext^(3/2)} # cube with A_ext side area
-  []
-  [frac2_ext_junc_flux]
-    type = VolumeJunctionCoupledFlux1Phase
-    A_coupled = ${A_ext_frac2}
-    normal_from_junction = '-1 0 0'
-    volume_junction = frac2_ext_junc
-    pp_suffix = frac2_ext
-  []
-  [ext_3]
-    type = FlowChannel1Phase
-    position = '${x_ext} 0 ${z_wells_bottom}'
-    orientation = '0 0 1'
-    length = ${L_injext_3}
-    n_elems = ${n_elems_injext_3}
-    A = ${A_ext}
-  []
-  [ext_wall]
-    type = SolidWall1Phase
-    input = 'ext_3:in'
-  []
+  # [outlet]
+  #   type = Outlet1Phase
+  #   input = 'ext_1:out'
+  #   p = ${p_outlet}
+  # []
+  # [ext_1]
+  #   type = FlowChannel1Phase
+  #   position = ${point_frac1_ext}
+  #   orientation = '0 0 1'
+  #   length = ${L_injext_1}
+  #   n_elems = ${n_elems_injext_1}
+  #   A = ${A_ext}
+  # []
+  # [frac1_ext_junc]
+  #   type = VolumeJunction1Phase
+  #   connections = 'ext_1:in ext_2:out'
+  #   position = ${point_frac1_ext}
+  #   initial_vel_x = 0
+  #   initial_vel_y = 0
+  #   initial_vel_z = 0
+  #   volume = ${fparse A_ext^(3/2)} # cube with A_ext side area
+  # []
+  # [frac1_ext_junc_flux]
+  #   type = VolumeJunctionCoupledFlux1Phase
+  #   A_coupled = ${A_ext_frac1}
+  #   normal_from_junction = '-1 0 0'
+  #   volume_junction = frac1_ext_junc
+  #   pp_suffix = frac1_ext
+  # []
+  # [ext_2]
+  #   type = FlowChannel1Phase
+  #   position = ${point_frac2_ext}
+  #   orientation = '0 0 1'
+  #   length = ${L_injext_2}
+  #   n_elems = ${n_elems_injext_2}
+  #   A = ${A_ext}
+  # []
+  # [frac2_ext_junc]
+  #   type = VolumeJunction1Phase
+  #   connections = 'ext_2:in ext_3:out'
+  #   position = ${point_frac2_ext}
+  #   initial_vel_x = 0
+  #   initial_vel_y = 0
+  #   initial_vel_z = 0
+  #   volume = ${fparse A_ext^(3/2)} # cube with A_ext side area
+  # []
+  # [frac2_ext_junc_flux]
+  #   type = VolumeJunctionCoupledFlux1Phase
+  #   A_coupled = ${A_ext_frac2}
+  #   normal_from_junction = '-1 0 0'
+  #   volume_junction = frac2_ext_junc
+  #   pp_suffix = frac2_ext
+  # []
+  # [ext_3]
+  #   type = FlowChannel1Phase
+  #   position = '${x_ext} 0 ${z_wells_bottom}'
+  #   orientation = '0 0 1'
+  #   length = ${L_injext_3}
+  #   n_elems = ${n_elems_injext_3}
+  #   A = ${A_ext}
+  # []
+  # [ext_wall]
+  #   type = SolidWall1Phase
+  #   input = 'ext_3:in'
+  # []
 []
 
 [MultiApps]
@@ -172,27 +211,28 @@ n_elems_frac_3 = 10
 []
 
 [Postprocessors]
-  [mass_flux_inlet]
+  [mass_rate_inlet]
     type = ADFlowBoundaryFlux1Phase
-    boundary = inlet
-    equation = mass
-    execute_on = 'INITIAL TIMESTEP_END'
-  []
-  [mass_flux_outlet]
-    type = ADFlowBoundaryFlux1Phase
-    boundary = outlet
+    boundary = inj_inlet
     equation = mass
     execute_on = 'INITIAL TIMESTEP_END'
   []
   [p_inlet]
     type = SideAverageValue
-    boundary = inlet
+    boundary = inj_inlet
     variable = p
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+
+  [mass_rate_outlet]
+    type = ADFlowBoundaryFlux1Phase
+    boundary = pro_outlet
+    equation = mass
     execute_on = 'INITIAL TIMESTEP_END'
   []
   [p_outlet]
     type = SideAverageValue
-    boundary = outlet
+    boundary = pro_outlet
     variable = p
     execute_on = 'INITIAL TIMESTEP_END'
   []
